@@ -1,8 +1,16 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --indigo-500: #6C63FF;
+--violet-500: #9B5DE5;
+--cyan-400:  #00E5FF;
+--pink-400:  #FF6EC7;
+
 }
 
 @theme inline {
