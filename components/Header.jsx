@@ -13,6 +13,10 @@ export default function Header() {
   className="text-5xl md:text-6xl font-extrabold leading-tight
              bg-gradient-to-r from-[var(--signal-violet)] via-[var(--signal-pink)] to-[var(--signal-cyan)]
              bg-clip-text text-transparent inline-block pb-1"
+             style={{
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+  }}
 >
   Claim Your Signal
 </h1>
