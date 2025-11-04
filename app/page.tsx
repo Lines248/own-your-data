@@ -6,24 +6,21 @@ import AssetCard from "@/components/AssetCard";
 
 export default function Home() {
   const assets = [
-    { id: 1, title: "Dreamscape", img: "/sample1.png" },
-    { id: 2, title: "Pulse Pattern", img: "/sample2.png" },
-    { id: 3, title: "Neural Bloom", img: "/sample3.png" },
+    { id: 1, title: "Echo Fragment", img: "/signal1.png" },
+    { id: 2, title: "Neural Bloom", img: "/signal2.png" },
+    { id: 3, title: "Spectral Field", img: "/signal3.png" },
   ];
 
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.25,
-        delayChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.25, delayChildren: 0.2 },
     },
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white">
+    <main className="min-h-screen text-white bg-gradient-to-br from-[#0a0a0f] via-[#12122b] to-[#1b0035]">
       <Header />
       <motion.section
         variants={container}

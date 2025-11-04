@@ -13,7 +13,13 @@ export default function AssetCard({ asset }: { asset: Asset }) {
   const [claimed, setClaimed] = useState(false);
   const [flipped, setFlipped] = useState(false);
 
-  const auraColors = ["#6C63FF", "#9B5DE5", "#00E5FF", "#FF6EC7"];
+  // signal aura colors — cycle between your defined tones
+  const auraColors = [
+    "var(--signal-cyan)",
+    "var(--signal-violet)",
+    "var(--signal-pink)",
+    "var(--signal-gold)",
+  ];
   const aura = auraColors[asset.id % auraColors.length];
 
   const cardVariant: any = {
@@ -28,22 +34,23 @@ export default function AssetCard({ asset }: { asset: Asset }) {
       style={{ perspective: 1000 }}
       onClick={() => setFlipped(!flipped)}
       whileHover={{
-        scale: 1.05,
-        boxShadow: `0 0 25px ${aura}`,
+        scale: 1.04,
+        boxShadow: `0 0 30px ${aura}`,
       }}
     >
       {/* Inner rotating wrapper */}
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.6 }}
-        className="relative h-full w-full rounded-2xl"
+        className="relative h-full w-full"
         style={{ transformStyle: "preserve-3d" }}
       >
         {/* FRONT */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-900/70 
+          className="absolute inset-0 flex flex-col items-center justify-center 
+                     rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800/90 to-slate-900/70 
                      backdrop-blur-md p-4 shadow-lg ring-1 ring-white/10"
-          style={{ backfaceVisibility: "hidden" }}
+          style={{ backfaceVisibility: "hidden", borderRadius: "1rem" }} // 1rem = 2xl rounded
         >
           {claimed && (
             <motion.div
@@ -58,8 +65,8 @@ export default function AssetCard({ asset }: { asset: Asset }) {
           <img
             src={asset.img}
             alt={asset.title}
-            className="h-28 w-28 rounded-lg object-cover mb-2" 
-            />
+            className="h-28 w-28 rounded-lg object-cover mb-2"
+          />
           <h3 className="font-semibold tracking-wide">{asset.title}</h3>
 
           <button
@@ -68,11 +75,11 @@ export default function AssetCard({ asset }: { asset: Asset }) {
               setClaimed(true);
             }}
             aria-pressed={claimed}
-            className={`mt-3 rounded-full px-4 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all
+            className={`mt-3 rounded-full px-4 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[var(--signal-cyan)] transition-all
               ${
                 claimed
-                  ? "bg-gradient-to-r from-indigo-500 to-pink-400 text-white shadow-[0_0_15px_rgba(108,99,255,0.4)]"
-                  : "bg-indigo-500 hover:bg-indigo-400 text-white"
+                  ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white shadow-[0_0_15px_rgba(255,92,186,0.4)]"
+                  : "bg-[var(--signal-cyan)] hover:opacity-90 text-slate-900"
               }`}
           >
             {claimed ? "Live ✓" : "Tune In"}
@@ -81,15 +88,17 @@ export default function AssetCard({ asset }: { asset: Asset }) {
 
         {/* BACK */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-indigo-600 text-white"
+          className="absolute inset-0 flex flex-col items-center justify-center 
+                     rounded-2xl bg-[var(--signal-violet)] text-white"
           style={{
             transform: "rotateY(180deg)",
             backfaceVisibility: "hidden",
+            borderRadius: "1rem",
           }}
         >
-          <p className="text-sm opacity-80">Metadata</p>
-          <p className="text-xs mt-1">Signal verified on Flow</p>
-          <p className="text-xs">Token ID #{asset.id}</p>
+          <p className="text-sm opacity-80">Signal verified on Flow</p>
+          <p className="text-xs mt-1">Owner: Inline Access Studio</p>
+          <p className="text-xs">Signal ID #{asset.id}</p>
         </div>
       </motion.div>
     </motion.div>
