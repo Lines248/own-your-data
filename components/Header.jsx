@@ -9,13 +9,18 @@ export default function Header() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="p-10 text-center"
     >
-      <h1
-  className="text-5xl md:text-6xl font-extrabold leading-tight
+     <h1
+  className="relative text-5xl md:text-6xl font-extrabold leading-tight text-center tracking-tight
+             text-transparent bg-clip-text 
              bg-gradient-to-r from-[var(--signal-violet)] via-[var(--signal-pink)] to-[var(--signal-cyan)]
-             bg-clip-text text-transparent inline-block pb-1"
-             style={{
+             drop-shadow-[0_2px_6px_rgba(255,255,255,0.2)]"
+  style={{
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
+    textShadow: `
+      0 0 15px rgba(255, 92, 186, 0.5),
+      0 0 25px rgba(0, 255, 240, 0.25)
+    `,
   }}
 >
   Claim Your Signal

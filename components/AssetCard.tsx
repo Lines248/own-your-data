@@ -9,7 +9,13 @@ interface Asset {
   img: string;
 }
 
-export default function AssetCard({ asset }: { asset: Asset }) {
+export default function AssetCard({
+  asset,
+  setThemeSignal,
+}: {
+  asset: Asset;
+  setThemeSignal: (color: string) => void;
+}) {
   const [claimed, setClaimed] = useState(false);
   const [flipped, setFlipped] = useState(false);
 
@@ -21,44 +27,46 @@ export default function AssetCard({ asset }: { asset: Asset }) {
   ];
   const aura = auraColors[asset.id % auraColors.length];
 
-  const cardVariant: any = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-  };
-
   return (
     <motion.div
-      variants={cardVariant}
-      className="relative h-72 w-full cursor-pointer"
+      className="relative h-72 w-full cursor-pointer rounded-2xl"
       style={{ perspective: 1000 }}
       onClick={() => setFlipped(!flipped)}
+      whileHover={{
+        scale: 1.03,
+        rotateX: 2,
+        rotateY: -2,
+        boxShadow: `0 0 45px ${aura}`,
+      }}
+      transition={{ type: "spring", stiffness: 120, damping: 14 }}
     >
-      {/* OUTER GLOW WRAPPER */}
+      {/* INNER WRAPPER: handles flipping */}
       <motion.div
-        whileHover={{ 
-          scale: 1.04,
-          boxShadow: `0 0 45px 10px ${aura}`, 
-        }}
-        animate={flipped ? { rotateY: 180 } : { rotateY: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.6 }}
         className="relative h-full w-full rounded-2xl"
         style={{
           transformStyle: "preserve-3d",
           borderRadius: "1rem",
-          boxShadow: flipped
-            ? `0 0 45px 5px ${aura}`
-            : `0 0 35px 2px ${aura}40`, // subtle transparency on hover
         }}
       >
         {/* FRONT FACE */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-900/70 
-                     backdrop-blur-md p-4 shadow-inner ring-1 ring-white/10"
+          className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl overflow-hidden 
+                     border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20"
           style={{
             backfaceVisibility: "hidden",
             borderRadius: "1rem",
           }}
         >
+          {/* Blended image background */}
+          <img
+            src={asset.img}
+            alt={asset.title}
+            className="absolute inset-0 h-full w-full object-cover opacity-70 mix-blend-overlay"
+          />
+
+          {/* Ownership initials badge */}
           {claimed && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
@@ -69,28 +77,26 @@ export default function AssetCard({ asset }: { asset: Asset }) {
             </motion.div>
           )}
 
-          <img
-            src={asset.img}
-            alt={asset.title}
-            className="h-28 w-28 rounded-lg object-cover mb-2"
-          />
-          <h3 className="font-semibold tracking-wide">{asset.title}</h3>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setClaimed(true);
-            }}
-            aria-pressed={claimed}
-            className={`mt-3 rounded-full px-4 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[var(--signal-cyan)] transition-all
-              ${
-                claimed
-                  ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white shadow-[0_0_15px_rgba(255,92,186,0.4)]"
-                  : "bg-[var(--signal-cyan)] hover:opacity-90 text-slate-900"
-              }`}
-          >
-            {claimed ? "Live ✓" : "Tune In"}
-          </button>
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+            <h3 className="font-semibold text-lg tracking-wide">{asset.title}</h3>
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // prevent flip on click
+                setClaimed(true);
+                setThemeSignal(aura);
+              }}
+              aria-pressed={claimed}
+              className={`mt-3 rounded-full px-4 py-1 text-sm font-medium transition-all
+                ${
+                  claimed
+                    ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white"
+                    : "bg-[var(--signal-cyan)] text-slate-900 hover:opacity-90"
+                }`}
+            >
+              {claimed ? "Live ✓" : "Tune In"}
+            </button>
+          </div>
         </div>
 
         {/* BACK FACE */}
