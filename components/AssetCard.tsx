@@ -13,7 +13,6 @@ export default function AssetCard({ asset }: { asset: Asset }) {
   const [claimed, setClaimed] = useState(false);
   const [flipped, setFlipped] = useState(false);
 
-  // signal aura colors — cycle between your defined tones
   const auraColors = [
     "var(--signal-cyan)",
     "var(--signal-violet)",
@@ -33,24 +32,32 @@ export default function AssetCard({ asset }: { asset: Asset }) {
       className="relative h-72 w-full cursor-pointer"
       style={{ perspective: 1000 }}
       onClick={() => setFlipped(!flipped)}
-      whileHover={{
-        scale: 1.04,
-        boxShadow: `0 0 30px ${aura}`,
-      }}
     >
-      {/* Inner rotating wrapper */}
+      {/* OUTER GLOW WRAPPER */}
       <motion.div
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative h-full w-full"
-        style={{ transformStyle: "preserve-3d" }}
+        whileHover={{ 
+          scale: 1.04,
+          boxShadow: `0 0 45px 10px ${aura}`, 
+        }}
+        animate={flipped ? { rotateY: 180 } : { rotateY: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="relative h-full w-full rounded-2xl"
+        style={{
+          transformStyle: "preserve-3d",
+          borderRadius: "1rem",
+          boxShadow: flipped
+            ? `0 0 45px 5px ${aura}`
+            : `0 0 35px 2px ${aura}40`, // subtle transparency on hover
+        }}
       >
-        {/* FRONT */}
+        {/* FRONT FACE */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center 
-                     rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800/90 to-slate-900/70 
-                     backdrop-blur-md p-4 shadow-lg ring-1 ring-white/10"
-          style={{ backfaceVisibility: "hidden", borderRadius: "1rem" }} // 1rem = 2xl rounded
+          className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-900/70 
+                     backdrop-blur-md p-4 shadow-inner ring-1 ring-white/10"
+          style={{
+            backfaceVisibility: "hidden",
+            borderRadius: "1rem",
+          }}
         >
           {claimed && (
             <motion.div
@@ -86,10 +93,9 @@ export default function AssetCard({ asset }: { asset: Asset }) {
           </button>
         </div>
 
-        {/* BACK */}
+        {/* BACK FACE */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center 
-                     rounded-2xl bg-[var(--signal-violet)] text-white"
+          className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-[var(--signal-violet)] text-white"
           style={{
             transform: "rotateY(180deg)",
             backfaceVisibility: "hidden",
