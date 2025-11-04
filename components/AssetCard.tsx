@@ -58,8 +58,8 @@ export default function AssetCard({ asset }: { asset: Asset }) {
           <img
             src={asset.img}
             alt={asset.title}
-            className="h-28 w-28 rounded-lg object-cover mb-2"
-          />
+            className="h-28 w-28 rounded-lg object-cover mb-2" 
+            />
           <h3 className="font-semibold tracking-wide">{asset.title}</h3>
 
           <button
@@ -75,7 +75,7 @@ export default function AssetCard({ asset }: { asset: Asset }) {
                   : "bg-indigo-500 hover:bg-indigo-400 text-white"
               }`}
           >
-            {claimed ? "Yours ✓" : "Make It Mine"}
+            {claimed ? "Live ✓" : "Tune In"}
           </button>
         </div>
 
@@ -88,7 +88,7 @@ export default function AssetCard({ asset }: { asset: Asset }) {
           }}
         >
           <p className="text-sm opacity-80">Metadata</p>
-          <p className="text-xs mt-1">Powered by Dapper Flow</p>
+          <p className="text-xs mt-1">Signal verified on Flow</p>
           <p className="text-xs">Token ID #{asset.id}</p>
         </div>
       </motion.div>

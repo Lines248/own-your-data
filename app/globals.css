@@ -10,7 +10,10 @@
 --violet-500: #9B5DE5;
 --cyan-400:  #00E5FF;
 --pink-400:  #FF6EC7;
-
+--signal-cyan: #00fff0;
+--signal-violet: #8a2be2;
+--signal-pink: #ff5cba;
+--signal-gold: #f5c542;
 }
 
 @theme inline {
