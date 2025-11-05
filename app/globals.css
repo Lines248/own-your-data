@@ -6,10 +6,17 @@
 :root {
   --background: #0a0a0f;
   --foreground: #f5f5f5;
-  --signal-cyan: #00fff0;
-  --signal-violet: #8a2be2;
+    --text-high-contrast: rgba(255, 255, 255, 0.92);
+  --text-mid-contrast: rgba(255, 255, 255, 0.82);
+  --text-low-contrast: rgba(255, 255, 255, 0.72);
+  --signal-cyan: #00f5ff; 
+  --signal-violet: #9a6cff; 
   --signal-pink: #ff5cba;
   --signal-gold: #f5c542;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 4px rgba(255,255,255,0.3);
 }
 
 body {
@@ -81,4 +88,35 @@ body::-webkit-scrollbar {
 
 .animate-fade-out {
   animation: fade-out 2.5s ease forwards;
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal-cyan);
+  outline-offset: 2px;
+}
+
+.btn-ghost-strong {
+  background-color: rgba(15, 23, 42, 0.6);
+  color: var(--text-high-contrast);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+}
+
+.btn-ghost-strong:hover {
+  background-color: rgba(15, 23, 42, 0.8);
+}
+
+.sr-only-focusable:focus {
+  position: fixed !important;
+  clip: auto !important;
+  height: auto !important;
+  width: auto !important;
+  padding: .5rem .75rem;
+  top: .5rem;
+  left: .5rem;
+  z-index: 9999;
+  background: #111827; 
+  color: #fff;
+  border-radius: .375rem;
+  outline: 2px solid var(--signal-cyan);
+  outline-offset: 2px;
 }

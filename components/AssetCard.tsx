@@ -18,7 +18,7 @@ interface AssetCardProps {
   onClaim: () => void;
   setThemeSignal: (color: string) => void;
   createOscillator: (freq: number) => { osc: OscillatorNode; gain: GainNode };
-  userInitials: string; 
+  userInitials: string;
 }
 
 export default function AssetCard({
@@ -66,7 +66,7 @@ export default function AssetCard({
     e.stopPropagation();
     if (gainRef.current) {
       const next = !muted;
-      gainRef.current.gain.value = next ? 0 : 0.25; 
+      gainRef.current.gain.value = next ? 0 : 0.25;
       setMuted(next);
       track("muted", { context: "card", id: asset.id, muted: next });
     }
@@ -76,11 +76,25 @@ export default function AssetCard({
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // ✅ Keyboard + click flip logic
+  const toggleFlip = () => setFlipped((f) => !f);
+
+  const handleCardKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleFlip();
+    }
+  };
+
   return (
     <motion.div
       className="relative h-72 w-full cursor-pointer rounded-2xl"
       style={{ perspective: "1000px" }}
-      onClick={() => setFlipped((f) => !f)}
+      onClick={toggleFlip}
+      onKeyDown={handleCardKey}
+      role="button"
+      tabIndex={0}
+      aria-label={`${asset.title} card ${flipped ? "back" : "front"}. Press Enter or Space to ${flipped ? "show front" : "flip for details"}.`}
       whileHover={{
         scale: 1.03,
         rotateX: 2,
@@ -89,17 +103,17 @@ export default function AssetCard({
       }}
       transition={{ type: "spring", stiffness: 120, damping: 14 }}
     >
-
+      {/* Flip Wrapper */}
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6 }}
         className="relative h-full w-full rounded-2xl"
         style={{ transformStyle: "preserve-3d" }}
       >
-  
+        {/* FRONT */}
         <div
           className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl overflow-hidden 
-            border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20"
+          border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20 text-white/90"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute inset-0 z-0">
@@ -172,6 +186,7 @@ export default function AssetCard({
           </div>
         </div>
 
+        {/* BACK */}
         <div
           className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-[var(--signal-violet)] text-white"
           style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}

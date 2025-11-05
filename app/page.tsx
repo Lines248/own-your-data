@@ -140,6 +140,13 @@ export default function Home() {
           : "linear-gradient(135deg,#0a0a0f,#12122b,#1b0035)",
       }}
     >
+         <a
+        href="#signals"
+        className="sr-only sr-only-focusable"
+      >
+        Skip to signals
+      </a>
+
       <Header />
       <AnalyticsHUD /> 
 
@@ -150,13 +157,15 @@ export default function Home() {
             setShowWalletModal(true);
           }}
           aria-label="Open profile and connection options"
-          className={`relative flex items-center justify-center w-10 h-10 rounded-full border transition
-            ${
-              userInitials
-                ? "border-[var(--signal-gold)]/60 bg-[var(--signal-gold)]/15 hover:bg-[var(--signal-gold)]/25"
-                : "border-[var(--signal-cyan)]/40 bg-[var(--signal-cyan)]/20 hover:bg-[var(--signal-cyan)]/30"
+          aria-haspopup="dialog"
+          aria-controls="wallet-modal"
+          aria-expanded={showWalletModal}
+       className={`relative flex items-center justify-center w-10 h-10 rounded-full border transition
+          ${userInitials
+              ? "border-[var(--signal-gold)]/60 bg-[var(--signal-gold)]/15 hover:bg-[var(--signal-gold)]/30 text-white/90"
+              : "border-[var(--signal-cyan)]/40 bg-[var(--signal-cyan)]/20 hover:bg-[var(--signal-cyan)]/35 text-white/90"
             }
-            focus-visible:ring-2 focus-visible:ring-[var(--signal-cyan)]`}
+        focus-visible:ring-2 focus-visible:ring-[var(--signal-cyan)]`}
         >
           {userInitials ? (
             <span className="text-sm font-semibold tracking-wide">
@@ -183,8 +192,11 @@ export default function Home() {
         </button>
 
         <div className="flex items-center gap-4">
-          <label className="text-xs opacity-70">Volume</label>
+          <label htmlFor="volume-slider" className="text-xs opacity-70">
+            Volume
+            </label>
           <input
+            id="volume-slider"
             type="range"
             min="0"
             max="1"
@@ -197,17 +209,20 @@ export default function Home() {
             }}
             className="w-32 accent-[var(--signal-cyan)] cursor-pointer"
           />
-          <button
-            onClick={toggleGlobalMute}
-            className="rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur hover:bg-white/20 transition"
-          >
-            {muted ? "Unmute All" : "Mute All"}
-          </button>
-        </div>
-      </div>
+      <button
+      onClick={toggleGlobalMute}
+      className="rounded-full bg-white/10 text-white/90 px-4 py-2 text-sm backdrop-blur hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-cyan)] transition"
+      aria-pressed={muted}
+    >
+      {muted ? "Unmute All" : "Mute All"}
+      </button>
+     </div>
+   </div>
+
+  <h2 id="signals" className="sr-only">Available signals</h2>
 
       {assets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 text-center text-white/70">
+        <div className="flex flex-col items-center justify-center h-64 text-center text-[var(--text-mid-contrast)]">
           <p className="text-lg font-medium">No signals available yet.</p>
           <p className="text-sm opacity-60">
             Check back soon to claim new frequencies.
@@ -246,20 +261,23 @@ export default function Home() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="wallet-title"
+           onKeyDown={(e) => {
+            if (e.key === "Escape") setShowWalletModal(false);
+          }}
         >
           <div className="bg-[#141424] border border-white/10 rounded-2xl p-6 w-[90%] max-w-sm text-center shadow-lg">
             <h2 id="wallet-title" className="text-lg font-semibold mb-4">
               Connect Your Account
             </h2>
-            <p className="text-sm text-white/70 mb-4">
+            <p className="text-sm text-[var(--text-mid-contrast)] mb-4">
               Choose how you’d like to connect.
             </p>
 
             <div className="flex flex-col gap-3 mb-4">
-              <button className="rounded-full bg-[var(--signal-cyan)]/30 border border-[var(--signal-cyan)]/40 py-2 hover:bg-[var(--signal-cyan)]/40 transition">
-                Email (Custodial)
-              </button>
-              <button className="rounded-full bg-[var(--signal-violet)]/30 border border-[var(--signal-violet)]/40 py-2 hover:bg-[var(--signal-violet)]/40 transition">
+           <button className="rounded-full bg-[var(--signal-cyan)]/30 border border-[var(--signal-cyan)]/50 text-[var(--text-high-contrast)] py-2 hover:bg-[var(--signal-cyan)]/40 focus-visible:ring-2 focus-visible:ring-[var(--signal-cyan)] transition">
+              Email (Custodial)
+            </button>
+           <button className="rounded-full bg-[var(--signal-violet)]/30 border border-[var(--signal-violet)]/50 text-[var(--text-high-contrast)] py-2 hover:bg-[var(--signal-violet)]/40 focus-visible:ring-2 focus-visible:ring-[var(--signal-cyan)] transition">
                 Wallet (Non-Custodial)
               </button>
             </div>
