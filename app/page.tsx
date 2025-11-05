@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect  } from "react";
 import { motion, Variants } from "framer-motion";
 import Header from "@/components/Header";
 import AssetCard from "@/components/AssetCard";
@@ -8,6 +8,7 @@ import AssetCard from "@/components/AssetCard";
 export default function Home() {
   const [themeSignal, setThemeSignal] = useState<string | null>(null);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(0.25);
 
   // Audio setup
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -19,18 +20,27 @@ export default function Home() {
         (window as unknown as { webkitAudioContext?: typeof AudioContext })
           .webkitAudioContext)!();
       const gain = ctx.createGain();
-      gain.gain.value = 0.05;
+      gain.gain.value = volume;
       gain.connect(ctx.destination);
       audioCtxRef.current = ctx;
       masterGainRef.current = gain;
     }
   }
 
+  useEffect(() => {
+    if (masterGainRef.current) {
+      masterGainRef.current.gain.linearRampToValueAtTime(
+        muted ? 0 : volume,
+        audioCtxRef.current!.currentTime + 0.1
+      );
+    }
+  }, [volume, muted]);
+
 function createOscillator(freq: number) {
   ensureAudio();
   const ctx = audioCtxRef.current!;
   const cardGain = ctx.createGain();
-  cardGain.gain.value = 0.25; // louder, but still smooth and safe
+  cardGain.gain.value = 0.5; 
   cardGain.connect(masterGainRef.current!);
 
   const osc = ctx.createOscillator();
@@ -85,7 +95,17 @@ function createOscillator(freq: number) {
       <Header />
 
       {/* Global mute toggle */}
-      <div className="flex justify-end px-8 mt-4">
+      <div className="flex justify-end items-center gap-4 px-8 mt-4">
+           <label className="text-xs opacity-70">Volume</label>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={(e) => setVolume(parseFloat(e.target.value))}
+          className="w-32 accent-[var(--signal-cyan)] cursor-pointer"
+        />
         <button
           onClick={toggleGlobalMute}
           className="rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur hover:bg-white/20 transition"
