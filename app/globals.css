@@ -72,3 +72,13 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;             
 }
+
+@keyframes fade-out {
+  0% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(10px); }
+}
+
+.animate-fade-out {
+  animation: fade-out 2.5s ease forwards;
+}

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import type { SyntheticEvent, KeyboardEvent } from "react";
+import { track } from "@/utils/analytics";
 
 interface Asset {
   id: number;
@@ -17,6 +18,7 @@ interface AssetCardProps {
   onClaim: () => void;
   setThemeSignal: (color: string) => void;
   createOscillator: (freq: number) => { osc: OscillatorNode; gain: GainNode };
+  userInitials: string; 
 }
 
 export default function AssetCard({
@@ -25,9 +27,11 @@ export default function AssetCard({
   onClaim,
   setThemeSignal,
   createOscillator,
+  userInitials,
 }: AssetCardProps) {
   const [muted, setMuted] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const oscRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
@@ -54,18 +58,20 @@ export default function AssetCard({
       const { osc, gain } = createOscillator(220 + asset.id * 60);
       oscRef.current = osc;
       gainRef.current = gain;
+      track("tuned_in", { id: asset.id, title: asset.title });
     }
   };
 
   const toggleMute = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (gainRef.current) {
-      gainRef.current.gain.value = muted ? 0.25 : 0;
-      setMuted(!muted);
+      const next = !muted;
+      gainRef.current.gain.value = next ? 0 : 0.25; 
+      setMuted(next);
+      track("muted", { context: "card", id: asset.id, muted: next });
     }
   };
 
-  // Respect reduced motion
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -83,28 +89,43 @@ export default function AssetCard({
       }}
       transition={{ type: "spring", stiffness: 120, damping: 14 }}
     >
-      {/* Flipping wrapper */}
+
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6 }}
         className="relative h-full w-full rounded-2xl"
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* FRONT */}
+  
         <div
           className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl overflow-hidden 
-                     border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20"
+            border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute inset-0 z-0">
-            <Image
-              src={asset.img}
-              alt={asset.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              quality={70}
-              className="object-cover opacity-70 mix-blend-overlay"
-            />
+            {imgError ? (
+              <div className="w-full h-full flex items-center justify-center text-white/70 text-sm">
+                Image unavailable
+              </div>
+            ) : (
+              <Image
+                src={asset.img}
+                alt={asset.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                quality={70}
+                className="object-cover opacity-70 mix-blend-overlay"
+                onError={() => {
+                  setImgError(true);
+                  const toast = document.createElement("div");
+                  toast.textContent = `⚠️ ${asset.title} image failed to load.`;
+                  toast.className =
+                    "fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm animate-fade-out";
+                  document.body.appendChild(toast);
+                  setTimeout(() => toast.remove(), 2500);
+                }}
+              />
+            )}
           </div>
 
           {isClaimed && (
@@ -113,7 +134,7 @@ export default function AssetCard({
               animate={{ opacity: 1, y: 0 }}
               className="absolute top-3 right-3 bg-white/10 rounded-full px-2 py-1 text-xs backdrop-blur-md text-white/90"
             >
-              LS
+              {userInitials}
             </motion.div>
           )}
 
@@ -151,7 +172,6 @@ export default function AssetCard({
           </div>
         </div>
 
-        {/* BACK */}
         <div
           className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-[var(--signal-violet)] text-white"
           style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
