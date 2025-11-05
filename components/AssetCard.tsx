@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 interface Asset {
   id: number;
@@ -82,11 +83,15 @@ export default function AssetCard({
 >
       {/* FRONT FACE */}
 <div className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl overflow-hidden border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20">
-  <img
-    src={asset.img}
-    alt={asset.title}
-    className="absolute inset-0 h-full w-full object-cover opacity-70 mix-blend-overlay"
-  />
+<Image
+  src={asset.img}
+  alt={asset.title}
+  width={800}
+  height={1100}
+  quality={70}
+  className="object-cover opacity-70 mix-blend-overlay"
+  sizes="(max-width: 768px) 100vw, 33vw"
+/>
 
         {claimed && (
           <motion.div
