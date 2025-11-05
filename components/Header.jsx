@@ -9,18 +9,20 @@ export default function Header() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="p-10 text-center"
     >
-     <h1
-  className="relative text-5xl md:text-6xl font-extrabold leading-tight text-center tracking-tight
-             text-transparent bg-clip-text 
-             bg-gradient-to-r from-[var(--signal-violet)] via-[var(--signal-pink)] to-[var(--signal-cyan)]
-             drop-shadow-[0_2px_6px_rgba(255,255,255,0.2)]"
+<h1
+  className="text-5xl md:text-6xl font-black text-center leading-tight text-transparent bg-clip-text
+             bg-gradient-to-b from-white via-slate-100 to-slate-400 select-none"
   style={{
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     textShadow: `
-      0 0 15px rgba(255, 92, 186, 0.5),
-      0 0 25px rgba(0, 255, 240, 0.25)
+      0 1px 0 #f0f0f0,
+      0 2px 0 #d9d9d9,
+      0 3px 0 #bfbfbf,
+      0 4px 2px rgba(0,0,0,0.25),
+      0 8px 8px rgba(0,0,0,0.15)
     `,
+    letterSpacing: "-0.02em",
   }}
 >
   Claim Your Signal
