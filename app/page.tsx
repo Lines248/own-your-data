@@ -8,9 +8,9 @@ export default function Home() {
   const [themeSignal, setThemeSignal] = useState<string | null>(null);
 
   const assets = [
-    { id: 1, title: "Echo Fragment", img: "/signals/signal1.png" },
-    { id: 2, title: "Neural Bloom", img: "/signals/signal2.png" },
-    { id: 3, title: "Spectral Field", img: "/signals/signal3.png" },
+    { id: 1, title: "Echo Fragment", img: "/signals/signal1.webp" },
+    { id: 2, title: "Neural Bloom", img: "/signals/signal2.webp" },
+    { id: 3, title: "Spectral Field", img: "/signals/signal3.webp" },
   ];
 
   const container = {

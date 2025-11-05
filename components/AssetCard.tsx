@@ -3,19 +3,37 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+function playTone(freq: number) {
+  const AudioContextClass: typeof AudioContext =
+    (window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext)!;
+
+  const ctx = new AudioContextClass();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value = freq;
+  gain.gain.value = 0.05;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 1.5);
+}
 interface Asset {
   id: number;
   title: string;
   img: string;
 }
 
-export default function AssetCard({
-  asset,
-  setThemeSignal,
-}: {
+interface AssetCardProps {
   asset: Asset;
   setThemeSignal: (color: string) => void;
-}) {
+}
+
+export default function AssetCard({ asset, setThemeSignal }: AssetCardProps) {
   const [claimed, setClaimed] = useState(false);
   const [flipped, setFlipped] = useState(false);
 
@@ -30,7 +48,7 @@ export default function AssetCard({
   return (
     <motion.div
       className="relative h-72 w-full cursor-pointer rounded-2xl"
-      style={{ perspective: 1000 }}
+      style={{ perspective: "1000px" }}
       onClick={() => setFlipped(!flipped)}
       whileHover={{
         scale: 1.03,
@@ -40,14 +58,13 @@ export default function AssetCard({
       }}
       transition={{ type: "spring", stiffness: 120, damping: 14 }}
     >
-      {/* INNER WRAPPER: handles flipping */}
+      {/* INNER WRAPPER */}
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.6 }}
         className="relative h-full w-full rounded-2xl"
         style={{
           transformStyle: "preserve-3d",
-          borderRadius: "1rem",
         }}
       >
         {/* FRONT FACE */}
@@ -56,17 +73,15 @@ export default function AssetCard({
                      border border-white/10 backdrop-blur-md bg-gradient-to-br from-slate-900/60 to-slate-800/20"
           style={{
             backfaceVisibility: "hidden",
-            borderRadius: "1rem",
           }}
         >
-          {/* Blended image background */}
           <img
             src={asset.img}
             alt={asset.title}
             className="absolute inset-0 h-full w-full object-cover opacity-70 mix-blend-overlay"
           />
 
-          {/* Ownership initials badge */}
+          {/* Ownership initials */}
           {claimed && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
@@ -79,23 +94,28 @@ export default function AssetCard({
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-            <h3 className="font-semibold text-lg tracking-wide">{asset.title}</h3>
-         <button
-            onClick={(e) => {
-            e.stopPropagation();
-           setClaimed(true);
-           setThemeSignal(aura);
-            }}
-           aria-pressed={claimed}
-           className={`mt-3 rounded-full px-4 py-1 text-sm font-medium transition-all duration-300
-           ${
-          claimed
-               ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white shadow-[0_0_12px_rgba(255,92,186,0.6)]"
-              : "bg-[var(--signal-cyan)] text-slate-900 hover:shadow-[0_0_15px_rgba(0,255,240,0.6)] hover:scale-105 hover:-translate-y-[1px]"
-           }`}
-        >
-  {claimed ? "Live ✓" : "Tune In"}
-</button>
+            <h3 className="font-semibold text-lg tracking-wide">
+              {asset.title}
+            </h3>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!claimed) {
+                  setClaimed(true);
+                  setThemeSignal(aura);
+                  playTone(220 + asset.id * 60);
+                }
+              }}
+              aria-pressed={claimed}
+              className={`mt-3 rounded-full px-4 py-1 text-sm font-medium transition-all duration-300
+                ${
+                  claimed
+                    ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white shadow-[0_0_12px_rgba(255,92,186,0.6)]"
+                    : "bg-[var(--signal-cyan)] text-slate-900 hover:shadow-[0_0_15px_rgba(0,255,240,0.6)] hover:scale-105 hover:-translate-y-[1px]"
+                }`}
+            >
+              {claimed ? "Live ✓" : "Tune In"}
+            </button>
           </div>
         </div>
 
@@ -105,7 +125,6 @@ export default function AssetCard({
           style={{
             transform: "rotateY(180deg)",
             backfaceVisibility: "hidden",
-            borderRadius: "1rem",
           }}
         >
           <p className="text-sm opacity-80">Signal verified on Flow</p>
