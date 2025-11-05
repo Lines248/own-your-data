@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect  } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import Header from "@/components/Header";
 import AssetCard from "@/components/AssetCard";
@@ -10,7 +10,24 @@ export default function Home() {
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.25);
 
-  // Audio setup
+  // Persisted ownership
+  const [claimedIds, setClaimedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+      const stored = localStorage?.getItem("claimedIds");
+      if (stored) {
+        Promise.resolve().then(() => {
+         setClaimedIds(JSON.parse(stored));
+      });
+    }
+  }, []);
+
+
+  useEffect(() => {
+    localStorage.setItem("claimedIds", JSON.stringify(claimedIds));
+  }, [claimedIds]);
+
+  // Audio
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
 
@@ -27,6 +44,7 @@ export default function Home() {
     }
   }
 
+  // Volume & mute updates
   useEffect(() => {
     if (masterGainRef.current) {
       masterGainRef.current.gain.linearRampToValueAtTime(
@@ -36,32 +54,34 @@ export default function Home() {
     }
   }, [volume, muted]);
 
-function createOscillator(freq: number) {
-  ensureAudio();
-  const ctx = audioCtxRef.current!;
-  const cardGain = ctx.createGain();
-  cardGain.gain.value = 0.5; 
-  cardGain.connect(masterGainRef.current!);
+  // Oscillator creation
+  function createOscillator(freq: number) {
+    ensureAudio();
+    const ctx = audioCtxRef.current!;
+    const cardGain = ctx.createGain();
+    cardGain.gain.value = 0.4; // slightly louder
+    cardGain.connect(masterGainRef.current!);
 
-  const osc = ctx.createOscillator();
-  osc.type = "sine";
-  osc.frequency.value = freq;
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = freq;
 
-  // Add gentle fade in and fade out to avoid clicks
-  const now = ctx.currentTime;
-  cardGain.gain.setValueAtTime(0, now);
-  cardGain.gain.linearRampToValueAtTime(0.25, now + 0.15);
-  cardGain.gain.linearRampToValueAtTime(0.2, now + 2);
+    // Gentle fade
+    const now = ctx.currentTime;
+    cardGain.gain.setValueAtTime(0, now);
+    cardGain.gain.linearRampToValueAtTime(0.3, now + 0.15);
+    cardGain.gain.linearRampToValueAtTime(0.25, now + 2);
 
-  osc.connect(cardGain);
-  osc.start();
-  return { osc, gain: cardGain };
-}
+    osc.connect(cardGain);
+    osc.start();
+    return { osc, gain: cardGain };
+  }
 
+  // Global mute toggle
   function toggleGlobalMute() {
     if (!masterGainRef.current) return;
     const ctx = audioCtxRef.current!;
-    const target = muted ? 0.05 : 0;
+    const target = muted ? volume : 0;
     masterGainRef.current.gain.linearRampToValueAtTime(
       target,
       ctx.currentTime + 0.25
@@ -74,14 +94,20 @@ function createOscillator(freq: number) {
     { id: 2, title: "Neural Bloom", img: "/signals/signal2.webp" },
     { id: 3, title: "Spectral Field", img: "/signals/signal3.webp" },
   ];
+//Reduce motion wrapper for card animation
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const container: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.25, delayChildren: 0.1 },
-    },
-  };
+const container: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: prefersReducedMotion
+      ? { duration: 0 }
+      : { staggerChildren: 0.25, delayChildren: 0.1 },
+  },
+};
 
   return (
     <main
@@ -94,9 +120,9 @@ function createOscillator(freq: number) {
     >
       <Header />
 
-      {/* Global mute toggle */}
+      {/* Controls */}
       <div className="flex justify-end items-center gap-4 px-8 mt-4">
-           <label className="text-xs opacity-70">Volume</label>
+        <label className="text-xs opacity-70">Volume</label>
         <input
           type="range"
           min="0"
@@ -114,7 +140,7 @@ function createOscillator(freq: number) {
         </button>
       </div>
 
-      {/* Grid of cards */}
+      {/*Grid of cards */}
       <motion.section
         variants={container}
         initial="hidden"
@@ -125,6 +151,12 @@ function createOscillator(freq: number) {
           <AssetCard
             key={asset.id}
             asset={asset}
+            isClaimed={claimedIds.includes(asset.id)}
+            onClaim={() =>
+              setClaimedIds((prev) =>
+                prev.includes(asset.id) ? prev : [...prev, asset.id]
+              )
+            }
             setThemeSignal={setThemeSignal}
             createOscillator={createOscillator}
           />
