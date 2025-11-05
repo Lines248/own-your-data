@@ -1,7 +1,7 @@
-// app/page.tsx (minimal, keeps your gradient + alignment)
 "use client";
+
 import { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Header from "@/components/Header";
 import AssetCard from "@/components/AssetCard";
 
@@ -9,13 +9,15 @@ export default function Home() {
   const [themeSignal, setThemeSignal] = useState<string | null>(null);
   const [muted, setMuted] = useState(false);
 
+  // Audio setup
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
 
   function ensureAudio() {
     if (!audioCtxRef.current) {
       const ctx = new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)!();
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext)!();
       const gain = ctx.createGain();
       gain.gain.value = 0.05;
       gain.connect(ctx.destination);
@@ -30,6 +32,7 @@ export default function Home() {
     const cardGain = ctx.createGain();
     cardGain.gain.value = 0.05;
     cardGain.connect(masterGainRef.current!);
+
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.value = freq;
@@ -41,8 +44,9 @@ export default function Home() {
   function toggleGlobalMute() {
     if (!masterGainRef.current) return;
     const ctx = audioCtxRef.current!;
+    const target = muted ? 0.05 : 0;
     masterGainRef.current.gain.linearRampToValueAtTime(
-      muted ? 0.05 : 0,
+      target,
       ctx.currentTime + 0.25
     );
     setMuted(!muted);
@@ -54,17 +58,13 @@ export default function Home() {
     { id: 3, title: "Spectral Field", img: "/signals/signal3.webp" },
   ];
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.25,     // cards appear one after another
-      delayChildren: 0.1,
-      ease: [0.22, 1, 0.36, 1],
+  const container: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.25, delayChildren: 0.1 },
     },
-  },
-};
+  };
 
   return (
     <main
@@ -77,6 +77,7 @@ const container = {
     >
       <Header />
 
+      {/* Global mute toggle */}
       <div className="flex justify-end px-8 mt-4">
         <button
           onClick={toggleGlobalMute}
@@ -86,12 +87,13 @@ const container = {
         </button>
       </div>
 
-<motion.section
-  variants={container as any}
-  initial="hidden"
-  animate="show"
-  className="grid gap-6 p-8 sm:grid-cols-2 lg:grid-cols-3"
->
+      {/* Grid of cards */}
+      <motion.section
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid gap-8 p-8 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {assets.map((asset) => (
           <AssetCard
             key={asset.id}
@@ -102,7 +104,6 @@ const container = {
         ))}
       </motion.section>
 
-      {/* small spacer so the last row isn't flush to the edge */}
       <div className="h-24" />
     </main>
   );
