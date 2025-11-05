@@ -57,7 +57,7 @@ export default function AssetCard({
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (gainRef.current) {
-      gainRef.current.gain.value = muted ? 0.5 : 0;
+      gainRef.current.gain.value = muted ? 0.15 : 0;
       setMuted(!muted);
     }
   };

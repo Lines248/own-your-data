@@ -26,20 +26,27 @@ export default function Home() {
     }
   }
 
-  function createOscillator(freq: number) {
-    ensureAudio();
-    const ctx = audioCtxRef.current!;
-    const cardGain = ctx.createGain();
-    cardGain.gain.value = 0.05;
-    cardGain.connect(masterGainRef.current!);
+function createOscillator(freq: number) {
+  ensureAudio();
+  const ctx = audioCtxRef.current!;
+  const cardGain = ctx.createGain();
+  cardGain.gain.value = 0.25; // louder, but still smooth and safe
+  cardGain.connect(masterGainRef.current!);
 
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = freq;
-    osc.connect(cardGain);
-    osc.start();
-    return { osc, gain: cardGain };
-  }
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.value = freq;
+
+  // Add gentle fade in and fade out to avoid clicks
+  const now = ctx.currentTime;
+  cardGain.gain.setValueAtTime(0, now);
+  cardGain.gain.linearRampToValueAtTime(0.25, now + 0.15);
+  cardGain.gain.linearRampToValueAtTime(0.2, now + 2);
+
+  osc.connect(cardGain);
+  osc.start();
+  return { osc, gain: cardGain };
+}
 
   function toggleGlobalMute() {
     if (!masterGainRef.current) return;
