@@ -289,16 +289,18 @@ export default function Home() {
               <input
                 id="initials"
                 value={initialDraft}
-                onChange={(e) =>
-                  setInitialDraft(e.target.value.toUpperCase().slice(0, 2))
-                }
-                inputMode="text"
-                autoCapitalize="characters"
-                maxLength={2}
-                className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-[var(--signal-cyan)]"
-                placeholder="LS"
-                aria-describedby="initials-help"
-              />
+                onChange={(e) => {
+              const lettersOnly = e.target.value.replace(/[^a-zA-Z]/g, "");
+              setInitialDraft(lettersOnly.toUpperCase().slice(0, 2));
+            }}
+             inputMode="text"
+             autoCapitalize="characters"
+             pattern="[A-Za-z]*"
+             maxLength={2}
+             className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-[var(--signal-cyan)]"
+             placeholder="LS"
+             aria-describedby="initials-help"
+            />
               <p id="initials-help" className="text-[11px] opacity-60">
                 Shown in the profile circle and on claimed cards.
               </p>

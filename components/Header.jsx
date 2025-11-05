@@ -10,7 +10,7 @@ export default function Header() {
       className="p-10 text-center"
     >
 <h1
-  className="text-5xl md:text-6xl font-black text-center leading-tight text-transparent bg-clip-text
+  className="font-black text-5xl md:text-6xl text-center leading-tight text-transparent bg-clip-text
              bg-gradient-to-b from-white via-slate-100 to-slate-400 select-none"
   style={{
     WebkitBackgroundClip: "text",

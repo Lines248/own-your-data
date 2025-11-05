@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   images: {
     remotePatterns: [
       {
@@ -8,11 +13,14 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
-    formats: ["image/webp", "image/avif"],
+    formats: ["image/avif", "image/webp"],
   },
-  reactStrictMode: true,
   experimental: {
     optimizePackageImports: ["framer-motion", "react", "next"],
+  },
+  turbopack: {
+    // Tell Next.js this is your project root
+    root: __dirname,
   },
 };
 

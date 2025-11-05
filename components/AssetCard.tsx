@@ -126,8 +126,9 @@ export default function AssetCard({
                 src={asset.img}
                 alt={asset.title}
                 fill
+                priority
                 sizes="(max-width: 768px) 100vw, 33vw"
-                quality={70}
+                quality={65}
                 className="object-cover opacity-70 mix-blend-overlay"
                 onError={() => {
                   setImgError(true);
