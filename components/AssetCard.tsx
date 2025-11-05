@@ -80,22 +80,22 @@ export default function AssetCard({
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
             <h3 className="font-semibold text-lg tracking-wide">{asset.title}</h3>
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); // prevent flip on click
-                setClaimed(true);
-                setThemeSignal(aura);
-              }}
-              aria-pressed={claimed}
-              className={`mt-3 rounded-full px-4 py-1 text-sm font-medium transition-all
-                ${
-                  claimed
-                    ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white"
-                    : "bg-[var(--signal-cyan)] text-slate-900 hover:opacity-90"
-                }`}
-            >
-              {claimed ? "Live ✓" : "Tune In"}
-            </button>
+         <button
+            onClick={(e) => {
+            e.stopPropagation();
+           setClaimed(true);
+           setThemeSignal(aura);
+            }}
+           aria-pressed={claimed}
+           className={`mt-3 rounded-full px-4 py-1 text-sm font-medium transition-all duration-300
+           ${
+          claimed
+               ? "bg-gradient-to-r from-[var(--signal-violet)] to-[var(--signal-pink)] text-white shadow-[0_0_12px_rgba(255,92,186,0.6)]"
+              : "bg-[var(--signal-cyan)] text-slate-900 hover:shadow-[0_0_15px_rgba(0,255,240,0.6)] hover:scale-105 hover:-translate-y-[1px]"
+           }`}
+        >
+  {claimed ? "Live ✓" : "Tune In"}
+</button>
           </div>
         </div>
 

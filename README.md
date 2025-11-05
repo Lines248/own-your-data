@@ -25,6 +25,12 @@ The development server supports hot reload, so your changes will appear immediat
 This concept was designed and developed as a design-engineering exercise to demonstrate interaction, accessibility, and scalable frontend architecture.
 Each card represents a digital “signal” that can be claimed and personalized, reflecting the idea of user ownership in the evolving web.
 
+## Interaction Philosophy
+The “Tune In → Live” interaction intentionally moves in one direction only. Once a user claims a signal, the state becomes permanent, it cannot be toggled off.
+This reflects the conceptual and technical logic of verifiable ownership systems, where actions such as claiming, minting, or registering identity are irreversible by design. The moment of activation is meant to feel deliberate and meaningful, emphasizing user agency rather than casual interactivity.
+
+Even within this prototype, the one-way transition signals commitment — a nod to blockchain’s immutability and to the idea that digital participation, once recorded, carries real permanence.
+
 ## Deployed on Vercel
 This project is hosted and automatically deployed through Vercel.
 Any updates pushed to the main branch trigger a new production build and redeploy at:
