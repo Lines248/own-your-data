@@ -53,3 +53,22 @@ body {
   filter: blur(120px);
   animation: drift 20s ease-in-out infinite;
 }
+
+html, body {
+  min-height: 100%;
+  height: auto;
+  overflow-y: auto;
+}
+
+#root, #__next {
+  min-height: 100%;
+}
+html, body {
+  scrollbar-width: none;      
+  -ms-overflow-style: none;   
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;             
+}
