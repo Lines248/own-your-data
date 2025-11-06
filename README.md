@@ -7,15 +7,6 @@ Repository: https://github.com/LinesSultzer/own-your-data￼
 ## Why this exists
 Show how a design-driven interaction can map to verifiable ownership patterns, with production-minded a11y and performance decisions.
 
-## 30-second tour
-1. Open the demo and tab through the UI to see visible focus rings.
-2. Flip a card (Enter/Space)
-3. Tune In to claim a signal (one-way state).
-4. Adjust Volume and toggle Mute All
-5. Reload to see persisted claim state.
-
-**Lighthouse:** Performance 94±, Accessibility 95±, Best Practices 100, SEO 100.
-
 ## Stack
 - **Framework:** Next.js 16 (App Router), React 19
 - **Styling:** Tailwind CSS v4 + design tokens
@@ -39,10 +30,19 @@ Key files: app/page.tsx, components/AssetCard.tsx.
 •	Keyboard support for flip/claim; reduced-motion honors user preference.
 •	Audio feedback gated by user input; global mute and per-card mute.
 
+## Highlights
+1. Open the demo and tab through the UI to see visible focus rings.
+2. Flip a card (Enter/Space)
+3. Tune In to claim a signal (one-way state).
+4. Adjust Volume and toggle Mute All
+5. Reload to see persisted claim state.
+
 ## Accessibility notes
 •	Semantic headings and labels; visible focus; keyboard parity for click actions.
 •	Contrast tokens for text and controls.
 •	Reduced motion path for users with motion sensitivity.
+
+**Lighthouse:** Performance 94±, Accessibility 95±, Best Practices 100, SEO 100.
 
 ## Performance notes
 •	next/image with AVIF/WebP, responsive sizes, and caching.
