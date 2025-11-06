@@ -1,5 +1,3 @@
-
-
 ## Claim Your Signal
 An interactive Next.js prototype that explores identity, authorship, and digital ownership through motion, sound, and accessible interaction.
 
@@ -19,7 +17,7 @@ Show how a design-driven interaction can map to verifiable ownership patterns, w
 **Lighthouse:** Performance 94±, Accessibility 95±, Best Practices 100, SEO 100.
 
 ## Stack
-- **Framework:** NExt.js 16 (App Router), React 19
+- **Framework:** Next.js 16 (App Router), React 19
 - **Styling:** Tailwind CSS v4 + design tokens
 - **Animation:** Framer Motion 12
 - **Images:** 'next/image' with WebP/AVIF and responsive sizes
@@ -32,7 +30,7 @@ To run locally:
     ```bash
     npm install
     npm run dev
-    #Open http://localhost:3000￼
+    # pen http://localhost:3000￼
 
 Key files: app/page.tsx, components/AssetCard.tsx.
 
@@ -75,6 +73,9 @@ Language        TypeScript
 •	No wallet connection yet; claims are local.
 •	Audio may be blocked until first interaction (browser policy).
 •	Single page prototype; multi-route patterns omitted intentionally.
+
+## License
+MIT
 
 ## System Diagram
                           ┌───────────────────────────────┐
