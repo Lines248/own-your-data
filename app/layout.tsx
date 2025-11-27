@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={lato.className}>
+    <html lang="en" className={`${lato.className} ${geistSans.variable} ${geistMono.variable}`}>
       <body className="relative m-0 p-0 overflow-hidden">
         <div className="absolute inset-0 bg-ambient pointer-events-none" />
         {children}
